@@ -1,0 +1,13 @@
+#Compilados y ejecutables 
+*.class 
+bin/ 
+target/ 
+build/ 
+
+#Archivos de IDEs 
+.idea/
+*.iml 
+.vscode/ 
+.settings/ 
+.classpath 
+.project
