@@ -1,6 +1,6 @@
 package aed.tp2;
 
-public class Usuario implements Comparable<Usuario> {
+public class Usuario{
     private int id;
     private double millasDisponibles;
     private double montoMillasHist;
