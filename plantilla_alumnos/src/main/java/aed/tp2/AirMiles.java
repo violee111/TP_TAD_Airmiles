@@ -2,7 +2,7 @@ package aed.tp2;
 
 public class AirMiles implements SistemaAirMiles {
     /*COMPLETAR*/
-
+    
     public AirMiles() {
         throw new UnsupportedOperationException("Sin implementar");
     }
