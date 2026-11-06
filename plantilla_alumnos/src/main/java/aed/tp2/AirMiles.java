@@ -19,7 +19,7 @@ public class AirMiles implements SistemaAirMiles {
     @Override
     public void registrarUsuario(int id) {
         Usuario nuevo = new Usuario(id);
-        this.usuarios.agregar_nuevo_ususario(id, nuevo);
+        this.usuarios.agregar_nuevo_usuario(id, nuevo);
 
         Handle<Usuario> handle = this.rankingHeap.agregar(nuevo);
         nuevo.setHandleHeap(handle);
@@ -29,10 +29,10 @@ public class AirMiles implements SistemaAirMiles {
 
     //funcion auxiliar para actualizar extremos
     private void actualizarExtremos (Usuario u) {
-        if (this.masAcumulador == null || u.getMillasTotalesHistoricas() > this.masAcumulador.getMillasTotalesHistoricas()){
+        if (this.masAcumulador == null || u.getMontoMillasHist() > this.masAcumulador.getMontoMillasHist()){
             this.masAcumulador = u;
         }
-        if (this.masCanjeador == null || u.getMillasTotalesCanjeadas() > this.masCanjeador.getMillasTotalesCanjeadas()){
+        if (this.masCanjeador == null || u.getMillasCanjeadasHist() > this.masCanjeador.getMillasCanjeadasHist()){
             this.masCanjeador = u;
         }
     }
