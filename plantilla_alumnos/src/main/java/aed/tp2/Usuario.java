@@ -58,7 +58,7 @@ public class Usuario{
 
     //para canjear millas que el usuario tiene disponibles (copmlejidad O(1))
     public void canjearMillas(double cant) {
-        this.millasDisponibles += cant;
+        this.millasDisponibles -= cant;
         this.millasCanjeadasHist += cant;
     }
 

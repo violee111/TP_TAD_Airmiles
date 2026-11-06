@@ -87,7 +87,7 @@ public void agregar_nuevo_usuario (K clave, V valor){
 
    }
  }
- public V obtener (K clave){
+public V obtener (K clave){
     Nodo actual = this.raiz;
 
     while (actual !=null) {
@@ -104,7 +104,7 @@ public void agregar_nuevo_usuario (K clave, V valor){
      }
     return (null);
    }
-   public Iterador<V> iterar_arbol (){ // instancio- creo el iterado dentro de esta clase 
+public Iterador<V> iterar_arbol (){ // instancio- creo el iterado dentro de esta clase 
       return new  ABB_iterador() ; 
    }
 
