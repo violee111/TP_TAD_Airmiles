@@ -1,14 +1,40 @@
 package aed.tp2;
 
 public class AirMiles implements SistemaAirMiles {
-    /*COMPLETAR*/
+    private ABB<Integer, Usuario> usuarios;
+    private TriePromociones promociones;
+    private Heap<Usuario> rankingHeap;
+
+    private Usuario masAcumulador;
+    private Usuario masCanjeador;
     
     public AirMiles() {
-        throw new UnsupportedOperationException("Sin implementar");
+        this.usuarios = new ABB<>();
+        this.promociones = new TriePromociones();
+        this.rankingHeap = new Heap<>();
+        this.masAcumulador = null;
+        this.masCanjeador = null;
     }
 
+    @Override
     public void registrarUsuario(int id) {
-        throw new UnsupportedOperationException("Sin implementar");
+        Usuario nuevo = new Usuario(id);
+        this.usuarios.agregar_nuevo_ususario(id, nuevo);
+
+        Handle<Usuario> handle = this.rankingHeap.agregar(nuevo);
+        nuevo.setHandleHeap(handle);
+
+        actualizarExtremos(nuevo);
+    }
+
+    //funcion auxiliar para actualizar extremos
+    private void actualizarExtremos (Usuario u) {
+        if (this.masAcumulador == null || u.getMillasTotalesHistoricas() > this.masAcumulador.getMillasTotalesHistoricas()){
+            this.masAcumulador = u;
+        }
+        if (this.masCanjeador == null || u.getMillasTotalesCanjeadas() > this.masCanjeador.getMillasTotalesCanjeadas()){
+            this.masCanjeador = u;
+        }
     }
 
     public void registrarUsuarioConReferidor(int id, int ref) {

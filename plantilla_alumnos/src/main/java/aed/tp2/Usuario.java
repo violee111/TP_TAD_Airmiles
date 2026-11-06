@@ -1,6 +1,6 @@
 package aed.tp2;
 
-public class Usuario{
+public class Usuario implements Comparable<Usuario> {
     private int id;
     private double millasDisponibles;
     private double montoMillasHist;
@@ -11,10 +11,7 @@ public class Usuario{
     private boolean huboTransferencia;
     private boolean esTransferidorInvalido;
 
-    //creo que aca lo que flata es un puntero que apunte 
-    //(vlaga la redundancia) a otro usuario, por eso nos 
-    // dijo la referncia a com funcionaban las copias de 
-    // los archivos en la llamada
+    private Handle<Usuario> handleHeap; // para rankingMillas
 
     public Usuario (int id) {
         this.id = id;
@@ -48,6 +45,14 @@ public class Usuario{
 
     public double getMillasCanjeadasHist() {
         return this.millasCanjeadasHist;
+    }
+
+    public Handle<Usuario> getHandleHeap() {
+        return this.handleHeap;
+    }
+
+    public void setHandleHeap(Handle<Usuario> handle) {
+        this.handleHeap = handle;
     }
 
     //para acreditar millas por vuelos o bonos de promociones (complejidad(1))
@@ -100,5 +105,12 @@ public class Usuario{
         }
     }
 
-    //habria que implementar un criterio de comparacion de saldos disponibles y las cosas relacionadas al heap etcetc
+    @Override
+    public int compareTo(Usuario otro) {
+        if (Double.compare(this.millasDisponibles, otro.millasDisponibles) != 0) {
+            return Double.compare(this.millasDisponibles, otro.millasDisponibles);
+        } else {
+            return Integer.compare(this.id, otro.id);
+        }
+    }
 }

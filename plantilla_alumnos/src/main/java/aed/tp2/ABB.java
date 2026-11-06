@@ -2,10 +2,6 @@ package aed.tp2;
 public class ABB<K extends Comparable<K> , V> {
 // el ABB tiene a K y V porque lo que se va a guardar es un diccionario
 
-Nodo raiz;
-
-int cantidad;
-
 private  class Nodo { // tiene que estar privado para evitar modificaciones en las caracteristicas de mi clase
  K clave;
  V valor;
@@ -22,12 +18,14 @@ private  class Nodo { // tiene que estar privado para evitar modificaciones en l
     this.derecha = null;
  }
 
-
 }
+
+private Nodo raiz;
+private int cantidad;
+
 public ABB (){
     this.raiz = null;
     this.cantidad= 0;
-
 }
 
 
