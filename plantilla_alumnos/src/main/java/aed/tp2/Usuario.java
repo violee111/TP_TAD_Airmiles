@@ -95,7 +95,7 @@ public class Usuario implements Comparable<Usuario> {
     }
 
     //devuelve categoria segun millas disponibles (complejidad O(1))
-    public String consultarCategoria() {
+    public String uConsultarCategoria() {
         if (this.millasDisponibles < 10000.0) {
             return "Bronce";
         } else if (this.millasDisponibles < 50000.0) {
