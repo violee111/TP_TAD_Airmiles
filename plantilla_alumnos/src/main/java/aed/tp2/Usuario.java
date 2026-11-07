@@ -100,8 +100,10 @@ public class Usuario implements Comparable<Usuario> {
             return "Bronce";
         } else if (this.millasDisponibles < 50000.0) {
             return "Plata";
-        } else {
+        } else if (this.millasDisponibles < 100000.0) {
             return "Oro";
+        } else {
+            return "Platino";
         }
     }
 

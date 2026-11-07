@@ -104,7 +104,7 @@ public class AirMiles implements SistemaAirMiles {
     }
 
     public void finalizarPromocion(String nombre) {
-        this.promociones.borrar(nombre);
+        this.promociones.eliminar(nombre);
     }
 
     public int elMasAcumulador() {
