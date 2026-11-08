@@ -1,5 +1,7 @@
 package aed.tp2;
 
+import java.util.ArrayList;
+
 public class AirMiles implements SistemaAirMiles {
     private ABB<Integer, Usuario> usuarios;
     private TriePromociones promociones;
@@ -55,10 +57,38 @@ public class AirMiles implements SistemaAirMiles {
         actualizarExtremos(nuevo);
     } // en total cuasta O(log U) + O(1) = O(log U) 
 
-    public void acumularMillas(int id, double distancia, String nombrePromo) {
+public void acumularMillas(int id, double distancia, String nombrePromo) {
+    Usuario valor = this.usuarios.obtener(id);  
+    double millas_a_sumar = distancia; 
 
-        throw new UnsupportedOperationException("Sin implementar");
+    if (nombrePromo != null) {
+        Promocion promo = this.promociones.obtener(nombrePromo);
+        if (promo != null) {
+            double candidato = distancia * promo.getFactor();
+
+            if (promo.tieneTope()) {
+            
+                if (promo.getMillasTotales() + candidato <= promo.getTope()) {
+                    millas_a_sumar = candidato;
+                    promo.sumaMillasTotales(candidato);
+
+                    if (promo.alcanzaTope()) {
+                        this.promociones.eliminar(nombrePromo);
+                    }
+                }
+                // Si no entra en el tope millas_asumar se queda igual con distancia
+            } else {
+                millas_a_sumar = candidato;
+            }
+        }
     }
+
+    valor.acreditarMillas(millas_a_sumar);
+
+    if (this.masAcumulador == null || valor.getMontoMillasHist() > this.masAcumulador.getMontoMillasHist()) {
+        this.masAcumulador = valor;
+    }
+}
 
     public void canjearMillas(int id, double cantidad) {
         Usuario u = this.usuarios.obtener(id);
@@ -74,7 +104,15 @@ public class AirMiles implements SistemaAirMiles {
     }
 
     public void transferirMillas(int origen, int destino, double cantidad) {
-        throw new UnsupportedOperationException("Sin implementar");
+        Usuario dador = this.usuarios.obtener(origen);
+        Usuario receptor = this.usuarios.obtener(destino);
+
+        if ((dador != null && receptor != null && dador != receptor)&& cantidad <= dador.getMillasDisponibles() && cantidad >0) {
+            dador.debitarTransferencia(cantidad);
+            receptor.acreditarTransferencia(cantidad);
+            dador.registrarInteraccionCon(receptor);
+            receptor.registrarInteraccionCon(dador);
+            }
     }
 
     public double consultarSaldo(int id) {
@@ -124,6 +162,30 @@ public class AirMiles implements SistemaAirMiles {
     }
 
     public int[][] paresTransferidoresExclusivos() {
-        throw new UnsupportedOperationException("Sin implementar");
-    }
+           Iterador <Usuario> iterar = this.usuarios.iterar_arbol();
+         
+
+          ArrayList <int[]> lista_de_pares = new ArrayList<int[]>();
+          
+          while (iterar.haySiguiente()) {
+
+              Usuario u = iterar.siguiente();
+                if(!u.esTransferidorInvalido() && u.getCompaTransferencia()!=null && !(u.getCompaTransferencia().esTransferidorInvalido()) && u.getCompaTransferencia().getCompaTransferencia() == u){ // con esto verifico todo lo necesesario para saber que mis usuarios son ambos transferidoores validos y existen 
+                   
+                  if (u.getId()< u.getCompaTransferencia().getId()) { // filtro las tuplas de esta forma me aseguro de que no halla repetidos (a,b)y (b,a).
+                      
+                   int[] tupla = new int[]{(u.getId()),(u.getCompaTransferencia().getId())};
+                   lista_de_pares.add(tupla);
+                  }
+                }
+          }
+          
+          int[][] resultado = new int[lista_de_pares.size()][2]; // tengo que pasar todo a una lsita simple porque sino tengo incompatibilidad de tipos 
+          for (int i = 0 ; i <lista_de_pares.size(); i++) {
+             resultado[i] = lista_de_pares.get(i); 
+          } 
+
+          
+         return (resultado);
+        }
 }
