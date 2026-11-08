@@ -16,7 +16,7 @@ public class Promocion {
         this.millasTotales = 0.0;
     }
 
-    //constructor para promociones CON topr
+    //constructor para promociones CON tope
     public Promocion(String nombre, double factor, double tope) {
         this(nombre, factor);
         this.tieneTope = true;
@@ -52,4 +52,5 @@ public class Promocion {
     public boolean alcanzaTope() {
         return this.tieneTope && this.millasTotales >= this.tope;
     }
+
 }

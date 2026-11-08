@@ -126,17 +126,19 @@ public Iterador<V> iterar_arbol (){ // instancio- creo el iterado dentro de esta
   @Override 
   public V siguiente(){
     V res = this.actual.valor;
+
     if (this.actual.derecha != null) {
          this.actual = this.actual.derecha;
-         while (this.actual.izquierda!=null){
+         while (this.actual.izquierda!=null){ // bajamos todo lo posible para encontrar el minimo de actual.derecha si lo tiene
             this.actual = this.actual.izquierda;
          }        
     }
-    else{
+    else{//si no hay hijo derecho eso significa que no hay mas elementos(nodos) tenemos que subir
+      
         while (this.actual.padre !=null && this.actual.padre.derecha == this.actual ){
          this.actual = this.actual.padre;
 
-        }
+        } // si el nodo es un nodo de izquierda y no tiene derecha entonces se avanza con su padre (se sube un nodo)
         this.actual = this.actual.padre;
     }
     return res; 
