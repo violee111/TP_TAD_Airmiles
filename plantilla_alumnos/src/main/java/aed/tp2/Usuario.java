@@ -72,6 +72,9 @@ public class Usuario implements Comparable<Usuario> {
         this.millasDisponibles -= cant;
     }
 
+    public void acreditarTransferencia(double  cant){
+        this.millasDisponibles = this.millasDisponibles + cant;
+    }
     //para registrar interaccion entre usuarios (interaccion = alguna transferencia)
     public void registrarInteraccionCon(Usuario otro) {
         this.huboTransferencia = true;

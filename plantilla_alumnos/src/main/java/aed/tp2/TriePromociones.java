@@ -70,14 +70,14 @@ public class TriePromociones {
 
         actual.promo = p;
     }
-    public void eliminar (Promocion p){
-        if (p == null || p.getNombre() == null) { 
+   public void eliminar(String clave) {
+        if (clave == null) { 
             return;
         }
-        String clave = p.getNombre();
-        this.raiz = eliminarRecursivo (this.raiz,clave, 0); // uso una funcion recursiva para recorrer nodo por nodo 
- }
-    public NodoTrie eliminarRecursivo(NodoTrie actual, String clave, int i) {
+        this.raiz = eliminarRecursivo(this.raiz, clave, 0); // uso una funcion recursiva para recorrer nodo por nodo 
+    }
+
+    public  NodoTrie eliminarRecursivo(NodoTrie actual, String clave, int i) {
 
         if (actual == null) { // el primer caso es que actual sea null en ese caso retorno eso porque ya no tengo ninun nodo que analizar o buscar
             return (actual);
@@ -85,33 +85,29 @@ public class TriePromociones {
 
         if (i == clave.length()) { // esto va a ocurrir ya cuando llegamos al final del nodo y encontramos el ultimo nodo que seria el que reprecenta la ultima palabra de la promocion
             if (actual.esClave) {
-               actual.esClave = false;
-               actual.promo = null;
-               this.tamaño = this.tamaño -1 ;
-              }      
-                    
-          }
+                actual.esClave = false;
+                actual.promo = null;
+                this.tamaño = this.tamaño - 1;
+            }      
+        }
+        else {
+            int n = (int) clave.charAt(i);
+            if (n < 0 || n >= cant_letras_ascii || actual.hijos[n] == null) { // si pasa esto es xq nunca estuvo la palabra actual en el sistema para borrar
+                return actual;
+            }
 
-        else{
-              
-             int n = (int) clave.charAt(i);
-             if (actual.hijos[n] == null) { // si pasa esto es xq nunca estuvo la palabra actual en el sistema para borrar
-                 return actual;
-                 }
+            actual.hijos[n] = eliminarRecursivo(actual.hijos[n], clave, i + 1); // aplico el caso recursivo 
 
-            actual.hijos[n] = eliminarRecursivo(actual.hijos[n], clave, i+1); // aplico el caso recursivo 
-
-            if (actual.hijos[n] == null) {// si el hijo se borro entonces restamos un hijo
-               actual.cantDeHijos--; 
+            if (actual.hijos[n] == null) { // si el hijo se borro entonces restamos un hijo
+                actual.cantDeHijos--; 
             }
         }
 
-
-        if (!actual.esClave && actual.cantDeHijos == 0 && i>0) { // si no es clave y ademas no tiene hijos se lo va a borrar
+        if (!actual.esClave && actual.cantDeHijos == 0 && i > 0) { // si no es clave y ademas no tiene hijos se lo va a borrar
             return null;
         }
-         return (actual);
- }
+        return (actual);
+    }
 
     // para verificar si una promocion existe en elsistema -> complejiddad den el peor caso O(|L|)
     public boolean pertenece(String nombre) {
