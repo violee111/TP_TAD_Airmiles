@@ -65,6 +65,7 @@ public class AirMiles implements SistemaAirMiles {
         if (u == null) {
             return;
         }
+        //no me di cuenta que puse el mismo nombre, pero este canjearMillas es el implementado en Usuario
         u.canjearMillas(cantidad);
         if (u.getHandleHeap() != null) {
             u.getHandleHeap().modificar(u);
