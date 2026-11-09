@@ -3,8 +3,8 @@ public class ABB<K extends Comparable<K> , V> {
 // el ABB tiene a K y V porque lo que se va a guardar es un diccionario
 
 private  class Nodo { // tiene que estar privado para evitar modificaciones en las caracteristicas de mi clase
- K clave;
- V valor;
+ K clave; // es el id del usuario
+ V valor; // es el usuario 
  Nodo padre;
  Nodo izquierda;
  Nodo derecha;
@@ -28,7 +28,8 @@ public ABB (){
     this.cantidad= 0;
 }
 
-
+// aca vamos a recorrer el arbol desde la raiz para ver si la clave es decir si el usuario ya existia.
+// vamos bajando por izquierda o derecha segun corresponda. si recorrio todo el arbol y nunca encontro ningun conincidencia entonces da false
 public boolean  pertenece_usuario (K clave) {
     Nodo actual = this.raiz;
 
@@ -46,10 +47,13 @@ public boolean  pertenece_usuario (K clave) {
 
     return false;
 }
-
+//nos devulve la cantidad de usuarios que hay dentro del arbol
 public int cantidad_de_usuarios_en_sistema (){
     return (this.cantidad);
 }
+
+//aca incertamos un nuevo usuarioen el ABB pero para eso el usuario no debe de estar repetido.
+//si el arbol esta vacio pasa a ser la raiz del arbol. 
 public void agregar_nuevo_usuario (K clave, V valor){
 
     Nodo nuevo_usuario = new Nodo (clave , valor); // defino el nodo que va a ingresar.

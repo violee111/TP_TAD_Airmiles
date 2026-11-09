@@ -13,6 +13,7 @@ public class Usuario implements Comparable<Usuario> {
 
     private Handle<Usuario> handleHeap; // para rankingMillas
 
+    // constructor del usuaeio con millas iniciales en 0
     public Usuario (int id) {
         this.id = id;
         this.millasDisponibles = 0.0;
@@ -31,26 +32,32 @@ public class Usuario implements Comparable<Usuario> {
         }
     }
 
+    // devuelve el id del usuario en O(1)
     public int getId() {
         return this.id;
     }
-
+    
+    // devuelve las millas disponibles del usuario en O(1)
     public double getMillasDisponibles() {
         return this.millasDisponibles;
     }
 
+    // devuelve el monto total de millas acumuladas por el usuario en O(1)
     public double getMontoMillasHist() {
         return this.montoMillasHist;
     }
 
+    // devuelve el monto total de millas canjeadas (historicamente) por el usuario en O(1)
     public double getMillasCanjeadasHist() {
         return this.millasCanjeadasHist;
     }
 
+    // devuelve el handle del usuario en el heap de ranking en O(1)
     public Handle<Usuario> getHandleHeap() {
         return this.handleHeap;
     }
 
+    // conecta el handle del heap al usuario en O(1)
     public void setHandleHeap(Handle<Usuario> handle) {
         this.handleHeap = handle;
     }
@@ -72,6 +79,10 @@ public class Usuario implements Comparable<Usuario> {
         this.millasDisponibles -= cant;
     }
 
+<<<<<<< HEAD
+=======
+    //para acreditar millas recibidas en una transferencia (complejidad O(1))
+>>>>>>> f85140c66d20b07eb8aee66c534ac95c149d5949
     public void acreditarTransferencia(double  cant){
         this.millasDisponibles = this.millasDisponibles + cant;
     }
@@ -89,10 +100,12 @@ public class Usuario implements Comparable<Usuario> {
         }
     }
 
+    // devuelve la referencia al usuario con el que tuvo transferencia (complejidad O(1))
     public Usuario getCompaTransferencia() {
         return this.compaTransferencia;
     }
 
+    // devuelve true si el usuario cumple que es exclisivo en O(1)
     public boolean esTransferidorInvalido() {
         return this.esTransferidorInvalido;
     }
@@ -109,7 +122,10 @@ public class Usuario implements Comparable<Usuario> {
             return "Platino";
         }
     }
-
+    
+    // compara las millas disponibles de los usuarios para ordenar 
+    // el heap por mayor monto de millas disponibles, si hay un empate,
+    // se compara por id de usuario (complejidad O(1))
     @Override
     public int compareTo(Usuario otro) {
         if (Double.compare(this.millasDisponibles, otro.millasDisponibles) != 0) {
