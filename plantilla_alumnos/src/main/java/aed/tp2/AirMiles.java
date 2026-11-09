@@ -2,6 +2,9 @@ package aed.tp2;
 
 import java.util.ArrayList;
 
+// la complejidad comentada en los comentarios (valga la reduncncia) son el caso promedio, 
+// el peor caso son los del enunciadoo y estan en el archivo de justificacionda en los comentarios (valga la reduncncia) son el caso promedio, 
+// el peor caso son los del enunciadoo y estan en el archivo de justificacion
 public class AirMiles implements SistemaAirMiles {
     private ABB<Integer, Usuario> usuarios;
     private TriePromociones promociones;
@@ -33,10 +36,14 @@ public class AirMiles implements SistemaAirMiles {
 
     //funcion auxiliar para actualizar extremos
     private void actualizarExtremos (Usuario u) {
-        if (this.masAcumulador == null || u.getMontoMillasHist() > this.masAcumulador.getMontoMillasHist()){
+        if (this.masAcumulador == null) {
+            this.masAcumulador = u;
+        } else if (u.getMontoMillasHist() > this.masAcumulador.getMontoMillasHist() || u.getMontoMillasHist() == this.masAcumulador.getMontoMillasHist() && u.getId() < this.masAcumulador.getId()) {
             this.masAcumulador = u;
         }
-        if (this.masCanjeador == null || u.getMillasCanjeadasHist() > this.masCanjeador.getMillasCanjeadasHist()){
+        if (this.masCanjeador == null) {
+            this.masCanjeador = u;
+        } else if (u.getMillasCanjeadasHist() > this.masCanjeador.getMillasCanjeadasHist() || u.getMillasCanjeadasHist() == this.masCanjeador.getMillasCanjeadasHist() && u.getId() < this.masCanjeador.getId()) {
             this.masCanjeador = u;
         }
     }
@@ -44,19 +51,24 @@ public class AirMiles implements SistemaAirMiles {
     //da de alta un usuario nuevo con bono de referido en O(log (U))
     // misma forma que registrarUsuario pero con bonoReferido y acreditando millas al referidor
     public void registrarUsuarioConReferidor(int id, int ref) {
-        Usuario nuevo = new Usuario(id, 500.0); //registra usuario con bonoReferido
+        Usuario nuevo = new Usuario(id); //registra usuario con bonoReferido
         this.usuarios.agregar_nuevo_usuario(id, nuevo);
 
         Handle<Usuario> handleDeNuevo = this.rankingHeap.agregar(nuevo); //lo agrega a ABB y lo inserta en el heap, que lo ubixa donde correspone en el handle por las 500 millas
         nuevo.setHandleHeap(handleDeNuevo);
+
+        //le sumamos 500 millas al nuevo usuario
+        nuevo.acreditarMillas(500.0);
+        nuevo.getHandleHeap().modificar(nuevo);  
+        actualizarExtremos(nuevo);
 
         Usuario referidor = this.usuarios.obtener(ref); // busca el referidor en el ABB
         if (referidor != null) {
             referidor.acreditarMillas(500.0);
             if (referidor.getHandleHeap() != null) {
                 referidor.getHandleHeap().modificar(referidor); //cambia saldo del referidor, entonces cambia prioridad en el heap
+                actualizarExtremos(referidor);
             }
-            actualizarExtremos(referidor);
         }
         actualizarExtremos(nuevo);
     } // en total cuasta O(log U) + O(1) = O(log U) 
@@ -64,35 +76,42 @@ public class AirMiles implements SistemaAirMiles {
     // acrediat millas por vuelvo teniendo en cuenta las promociones en O(log (U) + |L|)
     public void acumularMillas(int id, double distancia, String nombrePromo) {
         Usuario valor = this.usuarios.obtener(id);  
-        double millas_a_sumar = distancia; 
+        double factorCate = valor.factorCategoria(); 
+        double millas_a_sumar = distancia * factorCate;
+        Promocion promo = null;
 
         if (nombrePromo != null) {
-            Promocion promo = this.promociones.obtener(nombrePromo); // busca en el Trie en O(log (|L|))
+            promo = this.promociones.obtener(nombrePromo); // busca en el Trie en O(log (|L|))
             if (promo != null) {
-                double candidato = distancia * promo.getFactor();
+                double candidato = distancia * factorCate * promo.getFactor();
 
                 if (promo.tieneTope()) {
-                
-                    if (promo.getMillasTotales() + candidato <= promo.getTope()) {
+                    double restanteTope = promo.getTope() - promo.getMillasTotales();
+
+                    // si supera el tope, solo se le da hasta que lo alcanze
+                    if (candidato <= restanteTope) {
                         millas_a_sumar = candidato;
                         promo.sumaMillasTotales(candidato);
+                    } else {
+                        millas_a_sumar = restanteTope;
+                        promo.sumaMillasTotales(restanteTope);
+                    }
 
-                        if (promo.alcanzaTope()) {
-                            this.promociones.eliminar(nombrePromo); //remueva la promo del Trie en O(|L|)
-                        }
+                    if (promo.alcanzaTope()) {
+                        this.promociones.eliminar(nombrePromo); //remueva la promo del Trie en O(|L|)
                     }
                     // Si no entra en el tope millas_asumar se queda igual con distancia
                 } else {
                     millas_a_sumar = candidato;
+                    promo.sumaMillasTotales(candidato);
                 }
             }
         }   
 
         valor.acreditarMillas(millas_a_sumar);
+        valor.getHandleHeap().modificar(valor); 
+        actualizarExtremos(valor); 
 
-        if (this.masAcumulador == null || valor.getMontoMillasHist() > this.masAcumulador.getMontoMillasHist()) {
-            this.masAcumulador = valor;
-        }
     }
 
     // canjea millas del usuario en O(log(U))
@@ -125,6 +144,8 @@ public class AirMiles implements SistemaAirMiles {
         // modifica prioridad de usuarios en heap en O(log (U))
             dador.getHandleHeap().modificar(dador);
             receptor.getHandleHeap().modificar(receptor);
+
+            actualizarExtremos(dador);
     }
 
     // consulta saldo disponible de millas de un usuario en O(log (U))
@@ -142,9 +163,28 @@ public class AirMiles implements SistemaAirMiles {
        return u.uConsultarCategoria();
     }
 
-
+    // devuelve los n usuarios con mayor cantidad de millas disponibles en O(n log (U))
     public int[] rankingMillas(int n) {
-        throw new UnsupportedOperationException("Sin implementar");
+        int totalEnElHeap = this.rankingHeap.tamaño();
+        int k = n; // inicializo k con n, que es la cantidad de usuarios que quiero devolver
+        if (n > totalEnElHeap) {
+            k = totalEnElHeap; // si n es mayor que la cantidad de usuarios, devuelv todos los usuarios
+        }
+
+        int[] res = new int[k];
+        Usuario[] usuariosDesencolados = new Usuario[k]; // para guardar temporalmente los desencolados y depsues poder restaurar
+
+        for (int i = 0; i < k; i += 1) {
+            Usuario max = this.rankingHeap.desencolar(); // desencola el maximo del heap en O(log (U))
+            res[i] = max.getId(); // guarda el id del maximo en res
+            usuariosDesencolados[i] = max; // guarda el maximo en el arreglo temporal
+        }
+        //restauramos el heap original
+        for (int i = 0; i < k; i += 1) {
+            Usuario u = usuariosDesencolados[i];
+            this.rankingHeap.agregar(u); 
+        }
+        return res;
     }
 
     // da de alta una promoción SIN tope en el Trie en O(|L|)
@@ -167,7 +207,7 @@ public class AirMiles implements SistemaAirMiles {
     // devuelve el id del usuario con mas millas acumuladas en O(1)
     public int elMasAcumulador() {
         if (this.masAcumulador == null) {
-            return 0;
+            return -1;
         }
     return this.masAcumulador.getId();
     }
@@ -175,7 +215,7 @@ public class AirMiles implements SistemaAirMiles {
     // devuelve el id del usuario con mas millas canjeadas en O(1)
     public int elMasCanjeador() {
         if (this.masCanjeador == null) {
-            return 0;
+            return -1;
         }
         return this.masCanjeador.getId();
     }
