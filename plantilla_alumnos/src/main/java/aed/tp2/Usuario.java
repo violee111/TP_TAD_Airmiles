@@ -119,6 +119,19 @@ public class Usuario implements Comparable<Usuario> {
             return "Platino";
         }
     }
+
+    // para consultar el factorCategoria
+    public double factorCategoria() {
+        if (this.montoMillasHist < 10000.0) {
+            return 1.0; //bronce
+        } else if (this.montoMillasHist < 50000.0) {
+            return 1.5; // plata
+        } else if (this.montoMillasHist < 1000000.0) {
+            return 2.0; // oro 
+        } else {
+            return 0.0; // platino, como alcanzo el maximno, su factor paso a ser 0.0factor paso a ser 0.0
+        }
+    }
     
     // compara las millas disponibles de los usuarios para ordenar 
     // el heap por mayor monto de millas disponibles, si hay un empate,
