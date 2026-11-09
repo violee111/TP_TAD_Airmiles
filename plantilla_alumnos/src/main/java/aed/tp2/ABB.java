@@ -53,7 +53,8 @@ public int cantidad_de_usuarios_en_sistema (){
 }
 
 //aca incertamos un nuevo usuarioen el ABB pero para eso el usuario no debe de estar repetido.
-//si el arbol esta vacio pasa a ser la raiz del arbol. 
+//si el arbol esta vacio pasa a ser la raiz del arbol.Si no, busco cuál va a ser su nodo padre 
+// bajando por las ramas, lo engancho a izquierda o derecha según la clave
 public void agregar_nuevo_usuario (K clave, V valor){
 
     Nodo nuevo_usuario = new Nodo (clave , valor); // defino el nodo que va a ingresar.
@@ -89,6 +90,8 @@ public void agregar_nuevo_usuario (K clave, V valor){
 
    }
  }
+// Busca al usuario por su clave igual que en pertenece, pero en vez de tirar un booleano 
+// me devuelve el valor asociado a esa clave.
 public V obtener (K clave){
     Nodo actual = this.raiz;
 
@@ -106,6 +109,8 @@ public V obtener (K clave){
      }
     return (null);
    }
+
+   //se instnacia el iterador para poder recorrer los elementos del árbol de menor a mayor.
 public Iterador<V> iterar_arbol (){ // instancio- creo el iterado dentro de esta clase 
       return new  ABB_iterador() ; 
    }
@@ -113,6 +118,8 @@ public Iterador<V> iterar_arbol (){ // instancio- creo el iterado dentro de esta
    public class ABB_iterador implements  Iterador<V>{
     private Nodo actual;
 
+// Constructor del iterador: arranco en la raíz y bajo todo a la izquierda 
+// para pararme en el valor más chico de todo el árbol
     public ABB_iterador(){
         this.actual = raiz;
         if (this.actual !=null) {
@@ -123,11 +130,15 @@ public Iterador<V> iterar_arbol (){ // instancio- creo el iterado dentro de esta
 
    }
 
+// Chequea si todavía quedan nodos por recorrer.
    @Override 
    public boolean haySiguiente(){
     return this.actual !=null; // si es igual a null significa que no tiene siguientes
    }
-  @Override 
+
+// Devuelve el valor del nodo actual y avanza el puntero al siguiente 
+// Si tengo subárbol derecho, voy a la derecha y bajo todo a la izquierda para buscar el mínimo.  
+  @Override // Si no hay derecha, subo hasta encontrar de cuál venía por izquierda.
   public V siguiente(){
     V res = this.actual.valor;
 

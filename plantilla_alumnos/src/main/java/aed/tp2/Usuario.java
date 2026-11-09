@@ -79,10 +79,7 @@ public class Usuario implements Comparable<Usuario> {
         this.millasDisponibles -= cant;
     }
 
-<<<<<<< HEAD
-=======
     //para acreditar millas recibidas en una transferencia (complejidad O(1))
->>>>>>> f85140c66d20b07eb8aee66c534ac95c149d5949
     public void acreditarTransferencia(double  cant){
         this.millasDisponibles = this.millasDisponibles + cant;
     }

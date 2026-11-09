@@ -61,41 +61,6 @@ public class AirMiles implements SistemaAirMiles {
         actualizarExtremos(nuevo);
     } // en total cuasta O(log U) + O(1) = O(log U) 
 
-<<<<<<< HEAD
-public void acumularMillas(int id, double distancia, String nombrePromo) {
-    Usuario valor = this.usuarios.obtener(id);  
-    double millas_a_sumar = distancia; 
-
-    if (nombrePromo != null) {
-        Promocion promo = this.promociones.obtener(nombrePromo);
-        if (promo != null) {
-            double candidato = distancia * promo.getFactor();
-
-            if (promo.tieneTope()) {
-            
-                if (promo.getMillasTotales() + candidato <= promo.getTope()) {
-                    millas_a_sumar = candidato;
-                    promo.sumaMillasTotales(candidato);
-
-                    if (promo.alcanzaTope()) {
-                        this.promociones.eliminar(nombrePromo);
-                    }
-                }
-                // Si no entra en el tope millas_asumar se queda igual con distancia
-            } else {
-                millas_a_sumar = candidato;
-            }
-        }
-    }
-
-    valor.acreditarMillas(millas_a_sumar);
-
-    if (this.masAcumulador == null || valor.getMontoMillasHist() > this.masAcumulador.getMontoMillasHist()) {
-        this.masAcumulador = valor;
-    }
-}
-
-=======
     // acrediat millas por vuelvo teniendo en cuenta las promociones en O(log (U) + |L|)
     public void acumularMillas(int id, double distancia, String nombrePromo) {
         Usuario valor = this.usuarios.obtener(id);  
@@ -131,7 +96,6 @@ public void acumularMillas(int id, double distancia, String nombrePromo) {
     }
 
     // canjea millas del usuario en O(log(U))
->>>>>>> f85140c66d20b07eb8aee66c534ac95c149d5949
     public void canjearMillas(int id, double cantidad) {
         Usuario u = this.usuarios.obtener(id);
         if (u == null) {
@@ -147,29 +111,20 @@ public void acumularMillas(int id, double distancia, String nombrePromo) {
 
     // transfiere millas de un usuario a otro en O(log (U))
     public void transferirMillas(int origen, int destino, double cantidad) {
-<<<<<<< HEAD
-        Usuario dador = this.usuarios.obtener(origen);
-        Usuario receptor = this.usuarios.obtener(destino);
-
-=======
         //busca usuarios rn ABB
         Usuario dador = this.usuarios.obtener(origen);
         Usuario receptor = this.usuarios.obtener(destino);
 
         // descuenta del usuario "origen" y  acredita en usuario "destino" en O(1)
->>>>>>> f85140c66d20b07eb8aee66c534ac95c149d5949
         if ((dador != null && receptor != null && dador != receptor)&& cantidad <= dador.getMillasDisponibles() && cantidad >0) {
             dador.debitarTransferencia(cantidad);
             receptor.acreditarTransferencia(cantidad);
             dador.registrarInteraccionCon(receptor);
             receptor.registrarInteraccionCon(dador);
             }
-<<<<<<< HEAD
-=======
         // modifica prioridad de usuarios en heap en O(log (U))
             dador.getHandleHeap().modificar(dador);
             receptor.getHandleHeap().modificar(receptor);
->>>>>>> f85140c66d20b07eb8aee66c534ac95c149d5949
     }
 
     // consulta saldo disponible de millas de un usuario en O(log (U))
