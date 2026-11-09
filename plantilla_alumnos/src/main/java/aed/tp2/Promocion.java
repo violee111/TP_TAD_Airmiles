@@ -23,22 +23,27 @@ public class Promocion {
         this.tope = tope;
     }
 
+    // devuelve el nombre de la promocion en O(1)
     public String getNombre() {
         return this.nombre;
     }
 
+    // devuelve el factor en O(1)
     public double getFactor() {
         return this.factor;
     }
-
+    
+    // devuelve si la promocion tiene tope en O(1)
     public boolean tieneTope() {
         return this.tieneTope;
     }
 
+    // devuelve el tope de la promocion en O(1)
     public double getTope() {
         return this.tope;
     }
 
+    // devuelve la cantidad de millas acumuladas por la promocion en O(1)
     public double getMillasTotales() {
         return this.millasTotales;
     }
@@ -48,7 +53,7 @@ public class Promocion {
         this.millasTotales += cant;
     }
 
-    //para checkear que la promocion alcanzo tope (complejidad(1))
+    //para checkear que la promocion alcanzo tope (complejidad O(1)), y si tiene la da de baja
     public boolean alcanzaTope() {
         return this.tieneTope && this.millasTotales >= this.tope;
     }
